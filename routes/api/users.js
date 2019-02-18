@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 const router = express.Router();
 const User = require('../../models/User');
 const keys = require('../../config/keys');
+const passport = require('passport');
 
 //@route  GET api/users/test
 //@desc   Tests users route
@@ -71,6 +72,7 @@ router.post('/login', (req, res) => {
                 name: user.name,
               };
 
+              // Sign Token
               jwt.sign(payload, keys.secretOrKey, { expiresIn: 3600 }, (err, token) => {
                 res.json({ success: true, token: `Bearer ${token}` })
               });
@@ -83,6 +85,14 @@ router.post('/login', (req, res) => {
         return res.status(404).json({ email: 'User not found' });
       }
     })
+});
+
+//@route  Post api/users/current
+//@desc   returns a current user
+//@access private
+
+router.get('/current', passport.authenticate('jwt', { session: false }), (req, res) => {
+  res.json(req.user);
 })
 
 module.exports = router;
