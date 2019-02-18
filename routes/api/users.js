@@ -39,13 +39,38 @@ router.post('/register', (req, res) => {
               newUser.password = hash;
               newUser.save()
                 .then(user => res.json(user))
-                .catch(err => console.error(err))
+                .catch(err => console.error(err));
             }
           })
         })
       }
     })
+})
 
+//@route  Post api/users/login
+//@desc   Login and return a JWT (Json web token)
+//@access Public
+router.post('/login', (req, res) => {
+  const email = req.body.email;
+  const password = req.body.password;
+
+  User
+    .findOne({ email })
+    .then(user => {
+      if (user) {
+        bcrypt
+          .compare(password, user.password)
+          .then(isEqual => {
+            if (isEqual) {
+              res.json({ message: 'Success' });
+            } else {
+              res.status(400).json({ password: 'Password is incorrect' });
+            }
+          })
+      } else {
+        return res.status(404).json({ email: 'User not found' });
+      }
+    })
 })
 
 module.exports = router;
