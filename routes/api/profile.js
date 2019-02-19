@@ -3,9 +3,10 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const passport = require('passport');
 const validateProfileInput = require('../../validation/profile');
+const validateExperienceInput = require('../../validation/experience');
+const validateEducationInput = require('../../validation/education');
 
 // Load models
-
 const User = require('../../models/User');
 const Profile = require('../../models/Profile');
 
@@ -160,7 +161,88 @@ router.post('/', passport.authenticate('jwt', { session: false }), (req, res) =>
           })
       }
     });
-
 });
+
+//@route  POST api/experience
+//@desc   Add new experience to profile
+//@access Private
+router.post('/experience', passport.authenticate('jwt', { session: false }), (req, res) => {
+  const { isValid, errors } = validateExperienceInput(req.body);
+
+  if (!isValid) {
+    return res.status(400).json(errors);
+  }
+
+  const {
+    title,
+    company,
+    location,
+    from,
+    to,
+    current,
+    description,
+  } = req.body;
+
+  Profile
+    .findOne({ user: req.user.id })
+    .then(profile => {
+      const newExperience = {
+        title,
+        company,
+        location,
+        from,
+        to,
+        current,
+        description,
+      };
+
+      // Add to experience array
+      profile.experience.unshift(newExperience);
+
+      profile.save().then(profile => res.json(profile));
+    });
+});
+
+
+//@route  POST api/education
+//@desc   Add new education to profile
+//@access Private
+router.post('/education', passport.authenticate('jwt', { session: false }), (req, res) => {
+  const { isValid, errors } = validateEducationInput(req.body);
+
+  if (!isValid) {
+    return res.status(400).json(errors);
+  }
+
+  const {
+    school,
+    degree,
+    fieldOfStudy,
+    from,
+    to,
+    current,
+    description,
+  } = req.body;
+
+  Profile
+    .findOne({ user: req.user.id })
+    .then(profile => {
+      const newEducation = {
+        school,
+        degree,
+        fieldOfStudy,
+        from,
+        to,
+        current,
+        description,
+      };
+
+      // Add to education array
+      profile.education.unshift(newEducation);
+
+      profile.save().then(profile => res.json(profile));
+    });
+})
+
 
 module.exports = router;
