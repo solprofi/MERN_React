@@ -163,7 +163,7 @@ router.post('/', passport.authenticate('jwt', { session: false }), (req, res) =>
     });
 });
 
-//@route  POST api/experience
+//@route  POST api/profile/experience
 //@desc   Add new experience to profile
 //@access Private
 router.post('/experience', passport.authenticate('jwt', { session: false }), (req, res) => {
@@ -204,7 +204,7 @@ router.post('/experience', passport.authenticate('jwt', { session: false }), (re
 });
 
 
-//@route  POST api/education
+//@route  POST api/profile/education
 //@desc   Add new education to profile
 //@access Private
 router.post('/education', passport.authenticate('jwt', { session: false }), (req, res) => {
@@ -242,7 +242,52 @@ router.post('/education', passport.authenticate('jwt', { session: false }), (req
 
       profile.save().then(profile => res.json(profile));
     });
-})
+});
 
+//@route  DELETE api/profile/experience/:exp_id
+//@desc   Delete experience with an id
+//@access Private
+router.delete('/experience/:exp_id', passport.authenticate('jwt', { session: false }), (req, res) => {
+  const errors = {};
+
+  Profile
+    .findOne({ user: req.user.id })
+    .then(profile => {
+      // Get the id of item to delete
+      const indexToRemove = profile.experience.map(el => el.id).indexOf(req.params.exp_id);
+
+      if (indexToRemove === -1) {
+        errors.experience = 'Id not found';
+        res.status(404).json(errors);
+      } else {
+        profile.experience.splice(indexToRemove, 1);
+        profile.save().then(profile => res.json(profile));
+      }
+    })
+    .catch(err => res.status(404).json(err));
+});
+
+//@route  DELETE api/profile/education/:edu_id
+//@desc   Delete education with an id
+//@access Private
+router.delete('/education/:edu_id', passport.authenticate('jwt', { session: false }), (req, res) => {
+  const errors = {};
+
+  Profile
+    .findOne({ user: req.user.id })
+    .then(profile => {
+      // Get the id of item to delete
+      const indexToRemove = profile.education.map(el => el.id).indexOf(req.params.edu_id);
+
+      if (indexToRemove === -1) {
+        errors.education = 'Id not found';
+        res.status(404).json(errors);
+      } else {
+        profile.education.splice(indexToRemove, 1);
+        profile.save().then(profile => res.json(profile));
+      }
+    })
+    .catch(err => res.status(404).json(err));
+});
 
 module.exports = router;
