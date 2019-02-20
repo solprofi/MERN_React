@@ -38,3 +38,12 @@ export const setDecodedUser = user => ({
   type: SET_CURRENT_USER,
   payload: user,
 });
+
+export const logoutUser = () => dispatch => {
+  //clear local storage
+  localStorage.removeItem('jwtToken');
+  // clear auth header
+  setAuthToken(false);
+  //clear the user from the store
+  dispatch(setDecodedUser({}));
+}

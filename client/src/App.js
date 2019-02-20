@@ -11,13 +11,21 @@ import Login from './components/auth/Login';
 import Register from './components/auth/Register';
 import store from './store';
 import setAuthToken from './utils/setAuthToken';
-import { setDecodedUser } from './actions/authActions';
+import { setDecodedUser, logoutUser } from './actions/authActions';
 
 if (localStorage.jwtToken) {
   //check if token is in local storage
   setAuthToken(localStorage.jwtToken);
   const decoded = jwt_decode(localStorage.jwtToken);
   store.dispatch(setDecodedUser(decoded));
+
+  const currentTime = Date.now() / 1000;
+  if (decoded.exp < currentTime) {
+    //logout on token expiration
+    store.dispatch(logoutUser());
+
+    window.location.ref = '/login';
+  }
 }
 
 class App extends Component {

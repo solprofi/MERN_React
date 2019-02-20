@@ -12,12 +12,17 @@ export class Login extends Component {
     errors: {},
   }
 
+  componentDidMount = () => {
+    if (this.props.auth.isAuthenticated) {
+      this.props.history.push('/dashboard');
+    }
+  }
+
   componentDidUpdate = prevProps => {
     if (!prevProps.auth.isAuthenticated && this.props.auth.isAuthenticated) {
       this.props.history.push('/dashboard');
     }
   }
-
 
   handleInputChange = e => this.setState({ [e.target.name]: e.target.value });
 

@@ -21,6 +21,12 @@ export class Register extends Component {
     },
   }
 
+  componentDidMount = () => {
+    if (this.props.auth.isAuthenticated) {
+      this.props.history.push('/dashboard');
+    }
+  }
+
   handleInputChange = e => this.setState({ [e.target.name]: e.target.value });
 
   handleSubmit = e => {
