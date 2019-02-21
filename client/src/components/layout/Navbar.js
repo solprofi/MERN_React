@@ -4,11 +4,13 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import { logoutUser } from '../../actions/authActions';
+import { clearCurrentProfile } from '../../actions/profileActions';
 
 export class Navbar extends Component {
 
   handleLogoutClick = e => {
     e.preventDefault();
+    this.props.clearCurrentProfile();
     this.props.logoutUser();
   }
 
@@ -29,8 +31,7 @@ export class Navbar extends Component {
     const authLinks = (
       <ul className="navbar-nav ml-auto">
         <li className="nav-item">
-          <a
-            href="#"
+          <div
             className="nav-link"
             onClick={this.handleLogoutClick}
           >
@@ -42,7 +43,7 @@ export class Navbar extends Component {
               className='rounded-circle'
             />
             Log Out
-          </a>
+          </div>
         </li>
       </ul>
     )
@@ -80,4 +81,4 @@ const mapStateToProps = state => ({
   auth: state.auth
 });
 
-export default connect(mapStateToProps, { logoutUser })(Navbar);
+export default connect(mapStateToProps, { logoutUser, clearCurrentProfile })(Navbar);
