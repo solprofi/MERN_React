@@ -6,8 +6,7 @@ import { withRouter } from 'react-router-dom';
 import TextFieldGroup from '../common/TextFieldGroup';
 import { registerUser } from '../../actions/authActions';
 
-
-export class Register extends Component {
+class Register extends Component {
   state = {
     name: '',
     email: '',

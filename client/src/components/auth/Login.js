@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { loginUser } from '../../actions/authActions';
 import TextFieldGroup from '../common/TextFieldGroup';
 
-export class Login extends Component {
+class Login extends Component {
   state = {
     email: '',
     password: '',

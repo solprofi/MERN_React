@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-export class Landing extends Component {
+class Landing extends Component {
   componentDidMount = () => {
     if (this.props.auth.isAuthenticated) {
       this.props.history.push('/dashboard');
