@@ -1,11 +1,13 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
 import TextFieldGroup from '../common/TextFieldGroup';
 import TextAreaGroup from '../common/TextAreaGroup';
 import SelectListGroup from '../common/SelectListGroup';
 import InputGroup from '../common/InputGroup';
+import { createProfile } from '../../actions/profileActions';
 
 class CreateProfile extends Component {
   state = {
@@ -31,6 +33,47 @@ class CreateProfile extends Component {
   handleSubmit = e => {
     e.preventDefault();
 
+    const {
+      handle,
+      status,
+      company,
+      website,
+      location,
+      skills,
+      bio,
+      githubusername,
+      displaySocialInputs,
+      twitter,
+      facebook,
+      linkedin,
+      instagram,
+      youtube,
+    } = this.state;
+
+    this.props.createProfile({
+      handle,
+      status,
+      company,
+      website,
+      location,
+      skills,
+      bio,
+      githubusername,
+      displaySocialInputs,
+      twitter,
+      facebook,
+      linkedin,
+      instagram,
+      youtube,
+    }, this.props.history);
+  }
+
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.errors !== prevState.errors) {
+      return { errors: nextProps.errors };
+    } else {
+      return null;
+    }
   }
 
   toggleSocialLinks = () => this.setState({ displaySocialInputs: !this.state.displaySocialInputs });
@@ -113,7 +156,7 @@ class CreateProfile extends Component {
                   info='City & state suggested (eg. Boston, MA)'
                 />
                 <TextFieldGroup
-                  placeholder='Skills'
+                  placeholder='*Skills'
                   name='skills'
                   error={errors.skills}
                   value={skills}
@@ -138,7 +181,7 @@ class CreateProfile extends Component {
                 />
 
                 <div className="mb-3">
-                  <button onClick={this.toggleSocialLinks}>Show Social Newtwork Links </button>{' '}
+                  <button type='button' onClick={this.toggleSocialLinks}>Show Social Newtwork Links </button>{' '}
                   <span className="text-muted">Optional </span>
                 </div>
 
@@ -210,4 +253,4 @@ const mapStateToProps = state => ({
   errors: state.errors,
 });
 
-export default connect(mapStateToProps)(CreateProfile);
+export default connect(mapStateToProps, { createProfile })(withRouter(CreateProfile));
